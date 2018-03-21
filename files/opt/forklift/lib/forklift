@@ -1,0 +1,50 @@
+#!/bin/bash
+extract_image() {
+  mkdir -p /var/tmp/${BUILD_ID}
+  tar -C /var/tmp/${BUILD_ID} -xf -
+}
+
+prep_siphon() {
+  curl \
+    -k \
+    -f \
+    -o /dev/null \
+    -H "X-Auth-Token: ${WAREHOUSE_TOKEN}" \
+    -d "{\"old-id\": \"${PREVIOUS_BUILD_ID}\", \"new-id\": \"${BUILD_ID}\"}" \
+    "https://${WAREHOUSE_IP}:1566/stages"
+}
+
+rsync_image() {
+  rsync \
+    -a \
+    --delete \
+    -e 'ssh -p 1567 -i /var/tmp/id_rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' \
+    /var/tmp/${BUILD_ID}/ \
+    ${BUILD_ID}@${WAREHOUSE_IP}:${BUILD_ID}
+}
+
+commit_siphon() {
+  curl \
+    -k \
+    -f \
+    --progress-bar \
+    -o /dev/null \
+    -H "X-Auth-Token: ${WAREHOUSE_TOKEN}" \
+    -X PUT \
+    "https://${WAREHOUSE_IP}:1566/stages/${BUILD_ID}"
+}
+
+gzip_image() {
+  gzip > /var/tmp/${BUILD_ID}.tgz
+}
+
+upload_image() {
+  curl \
+    -k \
+    -f \
+    --progress-bar \
+    -o /dev/null \
+    -H "X-Auth-Token: ${WAREHOUSE_TOKEN}" \
+    --data-binary @/var/tmp/.tgz \
+    "https://${WAREHOUSE_IP}:7410/blobs/${BUILD_ID}.tgz"
+}

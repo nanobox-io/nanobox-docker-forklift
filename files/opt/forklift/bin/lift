@@ -1,0 +1,34 @@
+#!/bin/bash
+
+. /opt/forklift/lib/forklift
+
+# parse args and set values
+for i in "${@}"; do
+
+  case $i in
+    build_id=* )
+      BUILD_ID=${i#*=}
+      ;;
+    warehouse_token=* )
+      WAREHOUSE_TOKEN=${i#*=}
+      ;;
+    warehouse_ip=* )
+      WAREHOUSE_IP=${i#*=}
+      ;;
+    previous_build_id=* )
+      PREVIOUS_BUILD_ID=${i#*=}
+      ;;
+  esac
+
+done
+
+if [[ -n ${PREVIOUS_BUILD_ID} ]]
+then
+  extract_image
+  prep_siphon
+  rsync_image
+  commit_siphon
+else
+  gzip_image
+  upload_image
+fi
