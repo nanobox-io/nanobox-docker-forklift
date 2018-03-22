@@ -26,6 +26,7 @@ if [[ -n ${PREVIOUS_BUILD_ID} ]]
 then
   extract_image
   prep_siphon
+  create_ssh_key
   rsync_image
   commit_siphon
 else

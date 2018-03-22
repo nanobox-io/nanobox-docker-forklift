@@ -1,0 +1,35 @@
+sudo: required
+
+services:
+  - docker
+
+before_install:
+  - docker version
+  - docker network create --driver=bridge --subnet=192.168.0.0/16 --opt="com.docker.network.driver.mtu=1450" --opt="com.docker.network.bridge.name=redd0" nanobox
+  - ifconfig
+  - sudo apt-get -y install python-pip
+  - sudo pip install docker==2.7.0 docker-squash
+  - docker pull nanobox/base
+  - docker pull nanobox/runit
+  - docker pull nanobox/hoarder
+  - docker build -t nanobox/forklift .
+
+script:
+  - docker images
+  - sudo stdbuf -o0 test/run_all.sh
+  - docker images
+
+after_success:
+  - export BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
+  - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+  - docker build -t ${NAMESPACE}/forklift .
+  - docker-squash -t ${NAMESPACE}/forklift:squashed -f nanobox/runit --tmp-dir /var/tmp/squasher ${NAMESPACE}/forklift
+  - docker tag ${NAMESPACE}/forklift:squashed ${NAMESPACE}/forklift:beta;
+  - docker push ${REMOTE}${NAMESPACE}/forklift:beta;
+  - if [ "$BRANCH" == "master" ]; then
+    docker tag ${NAMESPACE}/forklift:squashed ${NAMESPACE}/forklift;
+    docker push ${REMOTE}${NAMESPACE}/forklift;
+    else
+    docker tag ${NAMESPACE}/forklift:squashed ${NAMESPACE}/forklift:${BRANCH//\//_};
+    docker push ${REMOTE}${NAMESPACE}/forklift:${BRANCH//\//_};
+    fi

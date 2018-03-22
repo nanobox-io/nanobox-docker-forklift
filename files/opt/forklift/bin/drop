@@ -2,15 +2,6 @@
 
 . /opt/forklift/lib/forklift
 
-fetch_image() {
-  curl \
-    -k \
-    -f \
-    -H "X-Auth-Token: ${WAREHOUSE_TOKEN}" \
-    https://${WAREHOUSE_IP}:7410/blobs/${BUILD_ID}.tgz \
-  | gunzip --stdout
-}
-
 # parse args and set values
 for i in "${@}"; do
 
