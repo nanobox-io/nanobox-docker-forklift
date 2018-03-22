@@ -21,7 +21,7 @@
 }
 
 @test "Upload new image using forklift with previous build_id" {
-  run bash -c "docker save nanobox/base | docker run \
+  run bash -c "docker save nanobox/runit | docker run \
     --name=forklift \
     -i \
     --rm \
