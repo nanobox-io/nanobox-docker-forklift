@@ -6,8 +6,20 @@
   start_warehouse
 }
 
+@test "Start nanobox/base container" {
+  run docker run --name base -d nanobox/base /bin/sleep 265d
+
+  [ "$status" -eq 0 ]
+}
+
+@test "Start nanobox/runit container" {
+  run docker run --name runit -d nanobox/runit /bin/sleep 265d
+
+  [ "$status" -eq 0 ]
+}
+
 @test "Upload image using forklift" {
-  run bash -c "docker export nanobox/base | docker run \
+  run bash -c "docker export base | docker run \
     --name=forklift \
     -i \
     --rm \
@@ -21,7 +33,7 @@
 }
 
 @test "Upload new image using forklift with previous build_id" {
-  run bash -c "docker export nanobox/runit | docker run \
+  run bash -c "docker export runit | docker run \
     --name=forklift \
     -i \
     --rm \
@@ -62,6 +74,18 @@
     docker import - test/b"
 
     [ "$status" -eq 0 ]
+}
+
+@test "Start nanobox/base container" {
+  run docker stop base
+
+  [ "$status" -eq 0 ]
+}
+
+@test "Start nanobox/runit container" {
+  run docker stop runit
+
+  [ "$status" -eq 0 ]
 }
 
 @test "Stop warehouse" {
