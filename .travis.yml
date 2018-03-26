@@ -9,8 +9,8 @@ before_install:
   - ifconfig
   - sudo apt-get -y install python-pip
   - sudo pip install docker==2.7.0 docker-squash
-  - docker pull nanobox/base
-  - docker pull nanobox/runit
+  - docker pull nanobox/redis:3.0
+  - docker pull nanobox/redis:3.2
   - docker pull nanobox/hoarder
   - docker build -t nanobox/forklift .
 
