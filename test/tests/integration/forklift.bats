@@ -38,6 +38,20 @@
   [ "$status" -eq 0 ]
 }
 
+@test "remove images before restoring" {
+  run docker rmi nanobox/redis:3.0
+
+  echo "$output"
+
+  [ "$status" -eq 0 ]
+
+  run docker rmi nanobox/redis:3.2
+
+  echo "$output"
+
+  [ "$status" -eq 0 ]
+}
+
 @test "load first image" {
   run bash -c "docker run \
     --name=forklift \
@@ -48,7 +62,7 @@
     --ip=192.168.0.101 \
     nanobox/forklift \
     drop archive=a token=123 host=192.168.0.100 |
-    docker load - test/a"
+    docker load"
 
   echo "$output"
 
@@ -65,7 +79,7 @@
     --ip=192.168.0.101 \
     nanobox/forklift \
     drop archive=b token=123 host=192.168.0.100 |
-    docker load - test/b"
+    docker load"
 
   echo "$output"
 
