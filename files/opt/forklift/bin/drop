@@ -6,13 +6,13 @@
 for i in "${@}"; do
 
   case $i in
-    build_id=* )
+    archive=* )
       BUILD_ID=${i#*=}
       ;;
-    warehouse_token=* )
+    token=* )
       WAREHOUSE_TOKEN=${i#*=}
       ;;
-    warehouse_ip=* )
+    host=* )
       WAREHOUSE_IP=${i#*=}
       ;;
   esac
