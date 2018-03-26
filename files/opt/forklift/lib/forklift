@@ -23,9 +23,18 @@ create_ssh_key() {
 }
 
 rsync_image() {
+  if [[ -f /var/tmp/${BUILD_ID}/manifest.json ]]
+  then
+    touch /var/tmp/${BUILD_ID}/manifest.json
+  fi
+  if [[ -f /var/tmp/${BUILD_ID}/repositories ]]
+  then
+    touch /var/tmp/${BUILD_ID}/repositories
+  fi
   rsync \
     -a \
     --delete \
+    -v \
     -e 'ssh -p 1567 -i /var/tmp/id_rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' \
     /var/tmp/${BUILD_ID}/ \
     ${BUILD_ID}.tgz@${WAREHOUSE_IP}:${BUILD_ID}.tgz
