@@ -23,7 +23,7 @@ after_success:
   - export BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
   - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
   - docker build -t ${NAMESPACE}/forklift .
-  - docker-squash -t ${NAMESPACE}/forklift:squashed -f nanobox/runit --tmp-dir /var/tmp/squasher ${NAMESPACE}/forklift
+  - docker-squash -t ${NAMESPACE}/forklift:squashed -f ubuntu:16.04 --tmp-dir /var/tmp/squasher ${NAMESPACE}/forklift
   - docker tag ${NAMESPACE}/forklift:squashed ${NAMESPACE}/forklift:beta;
   - docker push ${REMOTE}${NAMESPACE}/forklift:beta;
   - if [ "$BRANCH" == "master" ]; then
