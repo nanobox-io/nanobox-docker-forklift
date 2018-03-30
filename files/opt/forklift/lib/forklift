@@ -5,6 +5,7 @@ extract_image() {
 }
 
 prep_siphon() {
+  echo "Preparing warehouse"
   curl \
     -k \
     -f \
@@ -23,6 +24,7 @@ create_ssh_key() {
 }
 
 rsync_image() {
+  echo "Syncing changes"
   if [[ -f /var/tmp/${BUILD_ID}/manifest.json ]]
   then
     touch /var/tmp/${BUILD_ID}/manifest.json
@@ -34,14 +36,16 @@ rsync_image() {
   rsync \
     -a \
     --delete \
-    --progress \
+    -P \
     -v \
     -e 'ssh -p 1567 -i /var/tmp/id_rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' \
     /var/tmp/${BUILD_ID}/ \
-    ${BUILD_ID}.tgz@${WAREHOUSE_IP}:${BUILD_ID}.tgz
+    ${BUILD_ID}.tgz@${WAREHOUSE_IP}:${BUILD_ID}.tgz |
+    rsyncprogress
 }
 
 commit_siphon() {
+  echo "Committing archive"
   curl \
     -k \
     -f \
