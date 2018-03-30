@@ -35,6 +35,7 @@ rsync_image() {
     -a \
     --delete \
     -v \
+    --info=progress2 \
     -e 'ssh -p 1567 -i /var/tmp/id_rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' \
     /var/tmp/${BUILD_ID}/ \
     ${BUILD_ID}.tgz@${WAREHOUSE_IP}:${BUILD_ID}.tgz
