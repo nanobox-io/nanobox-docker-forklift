@@ -18,7 +18,7 @@ prep_siphon() {
 create_ssh_key() {
   if [[ ! -f /var/tmp/id_rsa ]]
   then
-    ssh-keygen -t rsa -N "" -f /var/tmp/id_rsa
+    ssh-keygen -t rsa -q -N "" -f /var/tmp/id_rsa
   fi
 }
 
