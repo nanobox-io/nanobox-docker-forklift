@@ -11,6 +11,7 @@ extract_archive() {
   curl \
     -k \
     -f \
+    -s \
     -o /dev/null \
     -H "X-Auth-Token: ${WAREHOUSE_TOKEN}" \
     -d "{\"old-id\": \"${PREVIOUS_BUILD_ID}.tgz\", \"new-id\": \"${BUILD_ID}.tgz\"}" \
@@ -49,12 +50,14 @@ sync_image() {
     2> /dev/null \
   | stdbuf -i0 -o0 tr $'\r' $'\n' \
   | awk '{printf "\rProgress: %s - %s",$2,$3}'
+  echo
 }
 
 commit_archive() {
   curl \
     -k \
     -f \
+    -s \
     -o /dev/null \
     -H "X-Auth-Token: ${WAREHOUSE_TOKEN}" \
     -X PUT \
