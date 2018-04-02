@@ -29,7 +29,7 @@ then
   echo "Extracting archive from previous push..."
   extract_archive
   create_ssh_key
-  echo "Syncing image layers with previous image..."
+  # echo "Syncing image layers with previous image..."
   update_timestamps
   sync_image
   echo "Committing new archive from sync..."

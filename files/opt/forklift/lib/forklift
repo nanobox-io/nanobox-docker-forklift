@@ -39,6 +39,20 @@ update_timestamps() {
   fi  
 }
 
+# sync_image() {
+#   rsync \
+#     -a \
+#     --delete \
+#     --info=progress2 \
+#     -e 'ssh -p 1567 -i /var/tmp/id_rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' \
+#     /var/tmp/${BUILD_ID}/ \
+#     ${BUILD_ID}.tgz@${WAREHOUSE_IP}:${BUILD_ID}.tgz \
+#     2> /dev/null \
+#   | stdbuf -i0 -o0 tr $'\r' $'\n' \
+#   | awk '{printf "\rProgress: %s - %s",$2,$3}'
+#   echo
+# }
+
 sync_image() {
   rsync \
     -a \
@@ -48,10 +62,11 @@ sync_image() {
     /var/tmp/${BUILD_ID}/ \
     ${BUILD_ID}.tgz@${WAREHOUSE_IP}:${BUILD_ID}.tgz \
     2> /dev/null \
-  | stdbuf -i0 -o0 tr $'\r' $'\n' \
-  | awk '{printf "\rProgress: %s - %s",$2,$3}'
+  | perl -e '$/ = "\r"; $| = 1; while(<STDIN>){/.* (\d+%)   (.*\/s).*/;print "Syncing image: $1 $2\r";}'
   echo
 }
+
+
 
 commit_archive() {
   curl \
