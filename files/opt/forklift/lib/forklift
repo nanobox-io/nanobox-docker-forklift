@@ -63,7 +63,7 @@ sync_image() {
     ${BUILD_ID}.tgz@${WAREHOUSE_IP}:${BUILD_ID}.tgz \
     2> /dev/null \
   | stdbuf -i0 -o0 \
-    perl -e '$/ = "\r"; $| = 1; while(<STDIN>){/.* (\d+%)   (.*\/s).*/;print "Syncing image: $1 $2\r";}'
+    perl -e '$/ = "\r"; $| = 1; while(<STDIN>){/.* (\d+%)   (.*\/s).*/;print "\rSyncing image: $1 $2";}'
   echo
 }
 
