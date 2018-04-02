@@ -24,12 +24,19 @@ done
 
 if [[ -n ${PREVIOUS_BUILD_ID} ]]
 then
-  extract_image
-  prep_siphon
+  echo "Persisting final image..."
+  extract_stdin
+  echo "Extracting archive from previous push..."
+  extract_archive
   create_ssh_key
-  rsync_image
-  commit_siphon
+  echo "Syncing image layers with previous image..."
+  update_timestamps
+  sync_image
+  echo "Committing new archive from sync..."
+  commit_archive
 else
+  echo "Compressing final image..."
   gzip_image
+  echo "Uploading image..."
   upload_image
 fi
