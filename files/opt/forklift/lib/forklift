@@ -49,7 +49,7 @@ update_timestamps() {
 #     ${BUILD_ID}.tgz@${WAREHOUSE_IP}:${BUILD_ID}.tgz \
 #     2> /dev/null \
 #   | stdbuf -i0 -o0 tr $'\r' $'\n' \
-#   | awk '{printf "\rProgress: %s - %s",$2,$3}'
+#   | awk '{printf "\rSyncing image: %s - %s",$2,$3}'
 #   echo
 # }
 
@@ -63,7 +63,7 @@ sync_image() {
     ${BUILD_ID}.tgz@${WAREHOUSE_IP}:${BUILD_ID}.tgz \
     2> /dev/null \
   | stdbuf -i0 -o0 \
-    perl -e '$/ = "\r"; $| = 1; while(<STDIN>){/.* (\d+%)   (.*\/s).*/;print "\rSyncing image: $1 $2";}'
+    perl -e '$/ = "\r"; $| = 1; while(<STDIN>){/.* (\d+%)   (.*\/s).*/;print "\rSyncing image: $1 - $2";}'
   echo -e '\r\033[KSyncing image...'
 }
 
