@@ -14,6 +14,7 @@ extract_archive() {
     -s \
     -o /dev/null \
     -H "X-Auth-Token: ${WAREHOUSE_TOKEN}" \
+    -H "Transfer-Encoding: chunked" \
     -d "{\"old-id\": \"${PREVIOUS_BUILD_ID}.tgz\", \"new-id\": \"${BUILD_ID}.tgz\"}" \
     "https://${WAREHOUSE_IP}:1566/stages"
 }
@@ -91,6 +92,7 @@ upload_image() {
     --progress-bar \
     -o /dev/null \
     -H "X-Auth-Token: ${WAREHOUSE_TOKEN}" \
+    -H "Transfer-Encoding: chunked" \
     --data-binary @/var/tmp/${BUILD_ID}.tgz \
     "https://${WAREHOUSE_IP}:7410/blobs/${BUILD_ID}.tgz"
 }
@@ -100,6 +102,7 @@ fetch_image() {
     -k \
     -f \
     -H "X-Auth-Token: ${WAREHOUSE_TOKEN}" \
+    -H "Transfer-Encoding: chunked" \
     https://${WAREHOUSE_IP}:7410/blobs/${BUILD_ID}.tgz \
   | gunzip --stdout
 }
