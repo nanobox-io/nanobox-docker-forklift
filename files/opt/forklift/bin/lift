@@ -24,18 +24,18 @@ done
 
 if [[ -n ${PREVIOUS_BUILD_ID} ]]
 then
-  echo "Persisting final image..."
+  echo "Compressing image..."
   extract_stdin
-  echo "Extracting archive from previous push..."
+  echo "Extracting image from last push..."
   extract_archive
   create_ssh_key
   # echo "Syncing image layers with previous image..."
   update_timestamps
   sync_image
-  echo "Committing new archive from sync..."
+  echo "Importing new image..."
   commit_archive
 else
-  echo "Compressing final image..."
+  echo "Compressing image..."
   gzip_image
   echo "Uploading image..."
   upload_image
