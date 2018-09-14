@@ -18,6 +18,9 @@ for i in "${@}"; do
     host=* )
       WAREHOUSE_IP=${i#*=}
       ;;
+    size=* )
+      IMAGE_SIZE=${i#*=}
+      ;;
   esac
 
 done
@@ -35,8 +38,8 @@ then
   echo "Importing new image..."
   commit_archive
 else
-  echo "Compressing image..."
+  echo "[> + <] Compressing image"
   gzip_image
-  echo "Uploading image..."
+  echo "[>>> +] Uploading image"
   upload_image
 fi

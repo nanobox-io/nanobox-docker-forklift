@@ -81,7 +81,14 @@ commit_archive() {
 }
 
 gzip_image() {
-  gzip > /var/tmp/${BUILD_ID}.tgz
+  if [[ -n "$IMAGE_SIZE" ]]; then
+    (pv --progress --force --size $IMAGE_SIZE - | gzip > /var/tmp/${BUILD_ID}.tgz) 2>&1 \
+    | stdbuf -i0 -o0 \
+      perl -e '$/ = "\r"; $| = 1; while(<STDIN>){/\[(.*)\](.*%)/; my $progress = $1; $progress =~ tr/=/#/; $progress =~ tr/>/ /; print "\r$progress$2";}' && \
+      echo && echo
+  else
+    gzip > /var/tmp/${BUILD_ID}.tgz
+  fi
 }
 
 upload_image() {
